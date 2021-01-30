@@ -1,0 +1,172 @@
+@layout('layouts/dashboard')
+
+@section('content')
+
+<div style="filter: blur(8px);">
+    <h2 class="title">Support ticket list</h2>
+    <p class="subtitle">List of tickets opend by customers</p>
+    <div class="columns has-text-centered">
+        <div class="column is-3">
+            <div class="box has-background-primary">
+                <h3 class="title is-2 has-text-white">448</h3>
+                <p class="subtitle has-text-white">Total Tickets</p>
+            </div>
+        </div>
+        <div class="column is-3">
+            <div class="box has-background-danger">
+                <h3 class="title is-2 has-text-white">81</h3>
+                <p class="subtitle has-text-white">Responded</p>
+            </div>
+        </div>
+        <div class="column is-3">
+            <div class="box has-background-success has-text-white">
+                <h3 class="title is-2 has-text-white">208</h3>
+                <p class="subtitle has-text-white">Resolved</p>
+            </div>
+        </div>
+        <div class="column is-3">
+            <div class="box has-background-warning">
+                <h3 class="title is-2 has-text-white">159</h3>
+                <p class="subtitle has-text-white">Pending</p>
+            </div>
+        </div>
+    </div>
+    <table class="table is-fullwidth">
+        <thead>
+            <tr>
+                <th scope="col">ID #</th>
+                <th scope="col">Opened By</th>
+                <th scope="col">Cust. Email</th>
+                <th scope="col">Subject</th>
+                <th class="has-text-centered" scope="col">Status</th>
+                <th class="has-text-centered" scope="col">Assign to</th>
+                <th class="has-text-centered" scope="col">Date</th>
+                <th class="has-text-centered" scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>348</td>
+                <td>
+                    <a href="#">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-32x32"><img class="is-rounded"
+                                        src="placeholder/pictures/bg_circle.svg?primary=00d1b2" alt=""></figure>
+                            </div>
+                            <div class="media-content">Lauren North</div>
+                        </div>
+                    </a>
+                </td>
+                <td>lauren@gmail.com</td>
+                <td>Where are my files?</td>
+                <td class="has-text-centered"><span class="tag is-warning">New</span></td>
+                <td class="has-text-centered">Dinesh Chugtai</td>
+                <td class="has-text-centered">18-11-2018</td>
+                <td class="has-text-centered"><a href="#">Edit</a></td>
+            </tr>
+            <tr>
+                <td>349</td>
+                <td>
+                    <a href="#">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-32x32"><img class="is-rounded"
+                                        src="placeholder/pictures/bg_circle.svg?primary=00d1b2" alt=""></figure>
+                            </div>
+                            <div class="media-content">Kian Gray</div>
+                        </div>
+                    </a>
+                </td>
+                <td>kian.gray@gmail.com</td>
+                <td>I can't send file to my friend</td>
+                <td class="has-text-centered"><span class="tag is-success">Resolved</span></td>
+                <td class="has-text-centered">Dinesh Chugtai</td>
+                <td class="has-text-centered">20-11-2018</td>
+                <td class="has-text-centered"><a href="#">Edit</a></td>
+            </tr>
+            <tr>
+                <td>350</td>
+                <td>
+                    <a href="#">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-32x32"><img class="is-rounded"
+                                        src="placeholder/pictures/bg_circle.svg?primary=00d1b2" alt=""></figure>
+                            </div>
+                            <div class="media-content">Mollie Davey</div>
+                        </div>
+                    </a>
+                </td>
+                <td>mollie@davey.com</td>
+                <td>Compressed files have low quality</td>
+                <td class="has-text-centered"><span class="tag is-success">Resolved</span></td>
+                <td class="has-text-centered">Dinesh Chugtai</td>
+                <td class="has-text-centered">21-11-2018</td>
+                <td class="has-text-centered"><a href="#">Edit</a></td>
+            </tr>
+            <tr>
+                <td>351</td>
+                <td>
+                    <a href="#">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-32x32"><img class="is-rounded"
+                                        src="placeholder/pictures/bg_circle.svg?primary=00d1b2" alt=""></figure>
+                            </div>
+                            <div class="media-content">Josh Douglas</div>
+                        </div>
+                    </a>
+                </td>
+                <td>j.douglas@hotmail.com</td>
+                <td>My phone won't turn on</td>
+                <td class="has-text-centered"><span class="tag is-dark">Pending</span></td>
+                <td class="has-text-centered">Dinesh Chugtai</td>
+                <td class="has-text-centered">22-11-2018</td>
+                <td class="has-text-centered"><a href="#">Edit</a></td>
+            </tr>
+            <tr>
+                <td>352</td>
+                <td>
+                    <a href="#">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-32x32"><img class="is-rounded"
+                                        src="placeholder/pictures/bg_circle.svg?primary=00d1b2" alt=""></figure>
+                            </div>
+                            <div class="media-content">Jodie Field</div>
+                        </div>
+                    </a>
+                </td>
+                <td>jodie@field.com</td>
+                <td>How to change e-mail??</td>
+                <td class="has-text-centered"><span class="tag is-warning">New</span></td>
+                <td class="has-text-centered">Dinesh Chugtai</td>
+                <td class="has-text-centered">22-11-2018</td>
+                <td class="has-text-centered"><a href="#">Edit</a></td>
+            </tr>
+            <tr>
+                <td>353</td>
+                <td>
+                    <a href="#">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-32x32"><img class="is-rounded"
+                                        src="placeholder/pictures/bg_circle.svg?primary=00d1b2" alt=""></figure>
+                            </div>
+                            <div class="media-content">Taylor Gill</div>
+                        </div>
+                    </a>
+                </td>
+                <td>taylor.gill777@hotmail.com</td>
+                <td>My files are corrupted</td>
+                <td class="has-text-centered"><span class="tag is-success">Resolved</span></td>
+                <td class="has-text-centered">Dinesh Chugtai</td>
+                <td class="has-text-centered">23-11-2018</td>
+                <td class="has-text-centered"><a href="#">Edit</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@endsection

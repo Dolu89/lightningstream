@@ -1,0 +1,165 @@
+@layout('layouts/dashboard')
+
+@section('content')
+<div class="columns mt-5" x-data="{ showMessage: {{show_message}}, duration: {{duration}} }">
+    <div class="column">
+        <span class="is-size-4">Configuration</span>
+        <form action="{{ route('AlertBoxConfigurationsController.update') }}" enctype="multipart/form-data"
+            method="POST" class="mt-5">
+            <div class="field">
+                <label class="label">Template</label>
+                <div class="control">
+                    <input class="input" type="text" placeholder="[donor] - [amount] sats" name="template"
+                        value="{{ template }}">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Duration in seconds</label>
+                <div class="control is-expanded">
+                    <input class="input {{ flashMessages.get('errors.duration') ? 'is-danger' : '' }}" type="number"
+                        min="1" max="30" placeholder="5" name="duration" value="{{ duration }}">
+                </div>
+                <p class="help is-danger">{{ flashMessages.get('errors.duration') || '' }}</p>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox" x-model="showMessage">
+                        <input type="hidden" name="showMessage" :value="showMessage">
+                        Show donor message
+                    </label>
+                </div>
+            </div>
+
+            <div class="columns">
+                <div class="column">
+                    <div class="field">
+                        <label class="label">Image (500KB)</label>
+                        <div id="image-field"
+                            class="file has-name mb-5 {{ flashMessages.get('errors.image') ? 'is-danger' : '' }}">
+                            <label class="file-label">
+                                <input class="file-input" type="file" name="image">
+                                <span class="file-cta">
+                                    <span class="file-icon">
+                                        <i class="fas fa-upload"></i>
+                                    </span>
+                                    <span class="file-label">
+                                        Choose a file…
+                                    </span>
+                                </span>
+                                <span class="file-name">
+                                    No file uploaded
+                                </span>
+                            </label>
+                        </div>
+                        <p class="help is-danger">{{ flashMessages.get('errors.image') || '' }}</p>
+                        @if(image_url)
+                        <img src="{{image_url}}" style="height: 50px;">
+                        @endif
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="field">
+                        <label class="label">Sound (1MB)</label>
+                        <div id="sound-field"
+                            class="file has-name mb-5 {{ flashMessages.get('errors.sound') ? 'is-danger' : '' }}">
+                            <label class="file-label">
+                                <input class="file-input" type="file" name="sound">
+                                <span class="file-cta">
+                                    <span class="file-icon">
+                                        <i class="fas fa-upload"></i>
+                                    </span>
+                                    <span class="file-label">
+                                        Choose a file…
+                                    </span>
+                                </span>
+                                <span class="file-name">
+                                    No file uploaded
+                                </span>
+                            </label>
+                        </div>
+                        <p class="help is-danger">{{ flashMessages.get('errors.sound') || '' }}</p>
+
+                        @if(image_url)
+                        <audio controls>
+                            <source src="{{sound_url}}" type="audio/mpeg" />
+                            Your browser does not support the audio element.
+                        </audio>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <button class="button is-primary is-pulled-right" type="submit">Update</button>
+        </form>
+
+    </div>
+    <div class="column is-one-third">
+        <span class="is-size-4">Preview</span>
+        <div class="mt-5">Work in progress</div>
+    </div>
+</div>
+
+<hr>
+
+<h2 class="is-size-4 mb-5">Alert box URL</h2>
+<div class="field has-addons" x-data="{ isUrlReveal: false, ...copyUrl }">
+    <div class="control">
+        <a class="button is-danger is-small" @click="isUrlReveal = !isUrlReveal">
+            <span x-show="isUrlReveal">HIDE</span>
+            <span x-show="!isUrlReveal">REVEAL</span>
+        </a>
+    </div>
+    <div class="control is-expanded">
+        <input id="alertBoxUrl" :class="{ 'blurred': !isUrlReveal }" class="input is-primary is-small" type="text"
+            value="{{ alertBoxUrl }}">
+        <p class="help">Note: Alert box URL contains sensitive information. It should not be shared with other users or
+            sites.</p>
+    </div>
+    <div class="control">
+        <a id="copyButton" class="button is-primary is-small" @click="copyUrl()">
+            COPY
+        </a>
+    </div>
+    <div class="control">
+        <a href="{{ alertBoxUrl }}" target="_blank" class="button is-primary is-small">
+            LAUNCH
+        </a>
+    </div>
+</div>
+
+@endsection
+
+@section('scripts')
+@super
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const soundInput = document.querySelector('#sound-field input[type=file]');
+        const imageInput = document.querySelector('#image-field input[type=file]');
+        soundInput.onchange = () => {
+            if (soundInput.files.length > 0) {
+                const fileName = document.querySelector('#sound-field .file-name');
+                fileName.textContent = soundInput.files[0].name;
+            }
+        }
+        imageInput.onchange = () => {
+            if (imageInput.files.length > 0) {
+                const fileName = document.querySelector('#image-field .file-name');
+                fileName.textContent = imageInput.files[0].name;
+            }
+        }
+
+        tippy('#copyButton', {
+            content: 'COPIED',
+            trigger: 'click',
+        });
+    });
+
+    function copyUrl() {
+        const fieldToCopy = document.getElementById('alertBoxUrl');
+        fieldToCopy.select();
+        document.execCommand("copy");
+    }
+
+</script>
+@endsection

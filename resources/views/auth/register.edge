@@ -1,0 +1,52 @@
+@layout('layouts/main')
+
+@section('content')
+<section class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-5 is-4-desktop">
+                <h4 class="title is-4">Sign up to Lightningstream</h4>
+                <form action="{{ route('AuthController.register') }}" method="post">
+                    <div class="field">
+                        <label class="label">Login</label>
+                        <div class="control has-icons-left">
+                            <input class="input {{ flashMessages.get('errors.name') ? 'is-danger' : '' }}" type="name"
+                                placeholder="John" name="name" value="{{ flashMessages.get('name') || '' }}">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                        <p class="help is-danger">{{ flashMessages.get('errors.name') || '' }}</p>
+                    </div>
+                    <div class="field">
+                        <label class="label">Password</label>
+                        <div class="control has-icons-left">
+                            <input class="input {{ flashMessages.get('errors.password') ? 'is-danger' : '' }}"
+                                type="password" placeholder="Password" name="password">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-key"></i>
+                            </span>
+                        </div>
+                        <p class="help is-danger">{{ flashMessages.get('errors.password') || '' }}</p>
+                    </div>
+                    <div class="field">
+                        <label class="label">Repeat password</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="password" placeholder="Repeat password" name="password_confirmation">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-key"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-primary is-fullwidth" type="submit">Sign up!</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@endsection

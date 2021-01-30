@@ -1,0 +1,57 @@
+@layout('layouts/main')
+
+@section('content')
+<section class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-5">
+                <h4 class="title is-4">Sign in to Lightningstream</h4>
+                <form action="{{ route('AuthController.login') }}" method="post">
+                    <div class="field">
+                        <label class="label">Login</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="name" placeholder="John" name="name"
+                                value="{{ flashMessages.get('name') || '' }}">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                        <p class="help is-danger">
+                            {{ (flashMessages.get('auth.errors.uid') || flashMessages.get('auth.errors.password')) ? 'User or password is incorrect' : '' }}
+                        </p>
+                    </div>
+                    <div class="field">
+                        <label class="label">Password</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="password" placeholder="Password" name="password">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-key"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="remember_me" class="checkbox">
+                            <div class="control">
+                                <input type="checkbox" name="remember_me">
+                                &nbsp; Remember me
+                            </div>
+                        </label>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-primary is-fullwidth" type="submit">Sign In!</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="column is-5 is-offset-1">
+                <h4 class="title is-spaced is-4">Create new account on Lightningstream</h4>
+                <p class="subtitle">Join the revolution! Create an account to witness the power of Lightningstream, start using
+                    our apps, and enjoy being on the forefront of technological innovation.</p>
+                <a href="/register" class="button is-primary is-fullwidth">Sign Up!</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@endsection

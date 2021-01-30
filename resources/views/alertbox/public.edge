@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
+    <style>
+        /* devanagari */
+        @font-face {
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 800;
+            src: local('Poppins ExtraBold'), local('Poppins-ExtraBold'), url(https://fonts.gstatic.com/s/poppins/v5/pxiByp8kv8JHgFVrLDD4Z11lFc-K.woff2) format('woff2');
+            unicode-range: U+0900-097F, U+1CD0-1CF6, U+1CF8-1CF9, U+200C-200D, U+20A8, U+20B9, U+25CC, U+A830-A839, U+A8E0-A8FB;
+        }
+
+        /* latin-ext */
+        @font-face {
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 800;
+            src: local('Poppins ExtraBold'), local('Poppins-ExtraBold'), url(https://fonts.gstatic.com/s/poppins/v5/pxiByp8kv8JHgFVrLDD4Z1JlFc-K.woff2) format('woff2');
+            unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+
+        /* latin */
+        @font-face {
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 800;
+            src: local('Poppins ExtraBold'), local('Poppins-ExtraBold'), url(https://fonts.gstatic.com/s/poppins/v5/pxiByp8kv8JHgFVrLDD4Z1xlFQ.woff2) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0px;
+        }
+
+        .box {
+            transform-origin: 50% 50%;
+            color: #FFFFFF;
+            text-align: center;
+            font-size: 64px;
+            font-family: Poppins, sans-serif;
+            font-weight: 800;
+            -webkit-text-stroke: 1px;
+            -webkit-text-stroke-color: #000;
+            display: table;
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+
+        .box>div {
+            display: table-row;
+        }
+
+        .boxMessage {
+            font-weight: 800;
+            font-size: 24px;
+            color: rgb(255, 255, 255);
+            font-family: Poppins, sans-serif;
+        }
+
+        .fullsize {
+            height: 100%;
+        }
+
+        .imageBox>div {
+            height: 100%;
+            display: table-cell;
+        }
+
+        .imageBox>div>img {
+            height: 100%;
+        }
+
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: opacity .5s;
+        }
+
+        .fade-enter,
+        .fade-leave-to
+
+        /* .fade-leave-active below version 2.1.8 */
+            {
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <transition name="fade">
+            <div class="box" v-if="isVisible">
+                <div class="imageBox">
+                    @if (image_url)
+                    <div>
+                        <img src="{{image_url}}" alt="donation_image" />
+                    </div>
+                    @endif
+                </div>
+                <div>@{{template}}</div>
+                <div class="boxMessage">@{{message}}</div>
+            </div>
+        </transition>
+        <span style="visibility:hidden">@{{forceDomUpdate}}</span>
+    </div>
+
+    <script type="text/javascript">
+        const socket = io('http://localhost:3333');
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: '',
+                template: '',
+                isInterlude: false,
+                isVisible: false,
+                forceDomUpdate: 0,
+                queue: []
+            },
+            methods: {
+                getSound() {
+                    var sound = new Audio('{{sound_url}}');
+                    return sound;
+                }
+            },
+            created: function () {
+                var self = this;
+                const uniqueUuid = '{{unique_uuid}}'
+
+                socket.on('room-joined', (data) => {
+                    console.log('room-joined', data)
+                })
+                socket.on('donation-done', (data) => {
+                    this.queue = [
+                        ...self.queue,
+                        {
+                            amount: data.amount,
+                            donor: data.donor,
+                            message: data.message,
+                        }
+                    ];
+                    this.forceDomUpdate = 1;
+                })
+                socket.emit('room-join', { unique_uuid: uniqueUuid })
+            },
+            updated: function () {
+                const duration = '{{duration}}';
+                const soundUrl = '{{sound_url}}';
+                const template = '{{template}}';
+
+                if (this.queue.length > 0 && !this.isVisible && !this.isInterlude) {
+                    setTimeout(() => {
+                        this.isVisible = false;
+                        this.isInterlude = true;
+                        this.queue = this.queue.slice(0 + 1, this.queue.length);
+                        this.forceDomUpdate = 1;
+
+                        setTimeout(() => {
+                            this.isInterlude = false;
+                            this.forceDomUpdate = 0;
+                        }, 1000)
+                    }, duration * 1000)
+                    const firstDonation = this.queue[0]
+                    this.template = template.replace('[donor]', firstDonation.donor).replace('[amount]', firstDonation.amount);
+                    this.message = firstDonation.message;
+                    this.isVisible = true;
+
+                    if (!!soundUrl) {
+                        var sound = this.getSound()
+                        sound.play().then(() => {
+                            setTimeout(() => { sound.pause(); }, duration * 1000)
+                        }, duration)
+                            .catch(error => {
+                                console.log("Catch sound")
+                                console.log(error)
+                                console.log(error.message)
+                            })
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

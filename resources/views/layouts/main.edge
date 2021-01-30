@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    @!include('layouts/partials/_head')
+</head>
+
+<body>
+    @!include('layouts/partials/_navbar')
+    <section class="section">
+        <div class="container">
+            @!section('content')
+        </div>
+    </section>
+
+    @!include('layouts/partials/_scripts')
+    @!section('scripts')
+</body>
+
+</html>
