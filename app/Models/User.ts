@@ -1,7 +1,16 @@
 import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
-import { column, beforeSave, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
+import {
+  column,
+  beforeSave,
+  BaseModel,
+  hasMany,
+  hasOne,
+  HasOne,
+  HasMany,
+} from '@ioc:Adonis/Lucid/Orm'
 import AlertBoxConfiguration from './AlertBoxConfiguration'
+import Wallet from './Wallet'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -30,6 +39,9 @@ export default class User extends BaseModel {
 
   @hasMany(() => AlertBoxConfiguration)
   public alertBoxConfigurations: HasMany<typeof AlertBoxConfiguration>
+
+  @hasOne(() => Wallet)
+  public wallet: HasOne<typeof Wallet>
 
   @beforeSave()
   public static async hashPassword(user: User) {

@@ -1,0 +1,82 @@
+@layout('layouts/dashboard')
+
+@section('content')
+@if(walletExists)
+<div>Your wallet is already configured. Please, go to your BTCPayServer instance to update it.</div>
+<a href="{{walletExists.btcPayUrl}}" target="_blank">Go to BTCPayServer</a>
+@else
+<div id="wallet">
+  <form method="post" action="{{ route('WalletsController.createOrUpdate') }}">
+
+    <div class="field">
+      <div class="control">
+        <label class="radio">
+          <input type="radio" name="custominstance" :value="false" v-model="customInstance">
+          Use the default BTCPay instance
+        </label>
+        <label class="radio">
+          <input type="radio" name="custominstance" :value="true" v-model="customInstance">
+          I have my own BTCPay server
+        </label>
+      </div>
+    </div>
+
+    <div v-if="customInstance">true</div>
+
+    <div v-if="!customInstance">
+
+      <div class="field">
+        <label class="label">Derivation public key (XPUB)</label>
+        <div class="control has-icons-right">
+          <input class="input {{flashMessages.has('errors.xpub') ? 'is-danger' : ''}}" type="text" name="xpub" placeholder="xpub..." value="{{ flashMessages.get('xpub') || '' }}">
+          @if(flashMessages.has('errors.xpub'))
+          <span class="icon is-small is-right">
+            <i class="fas fa-exclamation-triangle"></i>
+          </span>
+          @endif
+        </div>
+        @if(flashMessages.has('errors.xpub'))
+        <p class="help is-danger">{{flashMessages.get('errors.xpub')}}</p>
+        @endif
+      </div>
+
+      <div class="field">
+        <label class="label">Lightning node URI</label>
+        <div class="control">
+          <input class="input" type="text" name="lnuri" value="{{ flashMessages.get('lnuri') || '' }}">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Confirm password</label>
+        <div class="control">
+          <input class="input" type="password" name="password">
+        </div>
+      </div>
+
+      <div class="field is-pulled-right">
+        <div class="control">
+          <button class="button is-primary" type="submit">Save</button>
+        </div>
+      </div>
+    </div>
+
+
+  </form>
+
+</div>
+@endif
+@endsection
+
+@section('scripts')
+@super
+<script>
+  var app = new Vue({
+    el: "#wallet",
+    data: {
+      message: "Hello Vue!",
+      customInstance: false
+    }
+  });
+</script>
+@endsection

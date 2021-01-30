@@ -32,6 +32,11 @@ Route.group(() => {
     Route.get('/', 'AlertBoxConfigurationsController.index')
     Route.post('/', 'AlertBoxConfigurationsController.update')
   }).prefix('alert-box')
+
+  Route.group(() => {
+    Route.get('/', 'WalletsController.index')
+    Route.post('/', 'WalletsController.createOrUpdate')
+  }).prefix('wallets')
 }).middleware('auth')
 
 Route.on('register').render('auth/register')

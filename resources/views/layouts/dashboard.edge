@@ -2,27 +2,36 @@
 <html>
 
 <head>
-    @!include('layouts/partials/_head')
+  @!include('layouts/partials/_head')
 </head>
 
 <body>
-    @!include('layouts/partials/_navbar')
-    <section class="section">
-        <div class="container">
+@!include('layouts/partials/_navbar')
+<section class="section">
+  <div class="container">
 
-            <div class="columns">
-                <div class="column">
-                    @!include('layouts/partials/authenticated/_menu')
-                </div>
-                <div class="column is-9">
-                    @!section('content')
-                </div>
-            </div>
-        </div>
-    </section>
+    <div class="columns">
+      <div class="column">
+        @!include('layouts/partials/authenticated/_menu')
+      </div>
+      <div class="column is-9">
 
-    @!include('layouts/partials/_scripts')
-    @!section('scripts')
+        @if(flashMessages.has('success'))
+        <article class="message is-success">
+          <div class="message-body">
+            {{flashMessages.get('success')}}
+          </div>
+        </article>
+        @endif
+
+        @!section('content')
+      </div>
+    </div>
+  </div>
+</section>
+
+@!include('layouts/partials/_scripts')
+@!section('scripts')
 </body>
 
 </html>
