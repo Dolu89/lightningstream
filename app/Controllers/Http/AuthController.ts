@@ -10,6 +10,10 @@ export default class AuthController {
      * Validate user details
      */
     const validationSchema = schema.create({
+      email: schema.string({ trim: true }, [
+        rules.email(),
+        rules.unique({ table: 'users', column: 'name' }),
+      ]),
       name: schema.string({ trim: true }, [rules.unique({ table: 'users', column: 'name' })]),
       password: schema.string({ trim: true }, [rules.confirmed()]),
     })
@@ -22,6 +26,7 @@ export default class AuthController {
      * Create a new user
      */
     const user = new User()
+    user.email = userDetails.email
     user.name = userDetails.name
     user.password = userDetails.password
     user.uniqueUuid = uuidv4()
@@ -33,10 +38,10 @@ export default class AuthController {
   }
 
   public async login({ auth, request, response }: HttpContextContract) {
-    const name = request.input('name')
+    const email = request.input('email')
     const password = request.input('password')
     const rememberUser = !!request.input('remember_me')
-    await auth.attempt(name, password, rememberUser)
+    await auth.attempt(email, password, rememberUser)
 
     response.redirect('/dashboard')
   }
