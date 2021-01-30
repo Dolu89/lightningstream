@@ -24,16 +24,18 @@
   },
   "dependencies": {
     "@adonisjs/core": "^5.0.4-preview-rc",
+    "@adonisjs/lucid": "^10.0.0",
     "@adonisjs/repl": "^1.0.0",
     "@adonisjs/session": "^4.0.0",
     "@adonisjs/view": "^3.0.0",
-    "proxy-addr": "^2.0.6",
-    "reflect-metadata": "^0.1.13",
-    "source-map-support": "^0.5.19",
     "axios": "^0.19.2",
     "cloudinary": "^1.22.0",
+    "luxon": "^1.25.0",
     "pg": "^8.2.1",
+    "proxy-addr": "^2.0.6",
+    "reflect-metadata": "^0.1.13",
     "socket.io": "^2.3.0",
+    "source-map-support": "^0.5.19",
     "uuid": "^8.2.0"
   }
 }
