@@ -28,13 +28,7 @@ validator.rule(
      * Report error when password does not match
      */
     if (!match) {
-      errorReporter.report(
-        pointer,
-        'password',
-        'Password verification failed',
-        arrayExpressionPointer
-      )
-      console.log('IN VALIDATION')
+      errorReporter.report(pointer, 'password', 'Password verification failed', arrayExpressionPointer)
     }
     return
   },

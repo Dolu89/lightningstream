@@ -1,10 +1,6 @@
 @layout('layouts/dashboard')
 
 @section('content')
-@if(walletExists)
-<div>Your wallet is already configured. Please, go to your BTCPayServer instance to update it.</div>
-<a href="{{walletExists.btcPayUrl}}" target="_blank">Go to BTCPayServer</a>
-@else
 <div id="wallet">
   <form method="post" action="{{ route('WalletsController.createOrUpdate') }}">
 
@@ -21,8 +17,10 @@
       </div>
     </div>
 
-    <div v-if="customInstance">true</div>
+    <!--  Custom instance : true  -->
+    <div v-if="customInstance">TODO</div>
 
+    <!--  Custom instance : false  -->
     <div v-if="!customInstance">
 
       <div class="field">
@@ -49,9 +47,17 @@
 
       <div class="field">
         <label class="label">Confirm password</label>
-        <div class="control">
-          <input class="input" type="password" name="password">
+        <div class="control has-icons-right">
+          <input class="input {{flashMessages.has('errors.password') ? 'is-danger' : ''}}" type="password" name="password">
+          @if(flashMessages.has('errors.password'))
+          <span class="icon is-small is-right">
+            <i class="fas fa-exclamation-triangle"></i>
+          </span>
+          @endif
         </div>
+        @if(flashMessages.has('errors.password'))
+        <p class="help is-danger">{{flashMessages.get('errors.password')}}</p>
+        @endif
       </div>
 
       <div class="field is-pulled-right">
@@ -65,7 +71,6 @@
   </form>
 
 </div>
-@endif
 @endsection
 
 @section('scripts')

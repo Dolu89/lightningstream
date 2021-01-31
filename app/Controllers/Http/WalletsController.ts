@@ -2,17 +2,19 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import axios from 'axios'
 import Env from '@ioc:Adonis/Core/Env'
+import BtcpayService from 'App/Services/BtcpayService'
 
 export default class WalletsController {
   public async index({ view, auth }: HttpContextContract) {
     const wallet = await auth.user?.related('wallet').query().first()
     let data = {}
     if (wallet) {
-      data = {
-        walletExists: {
-          btcPayUrl: wallet.btcpayUrl,
-        },
-      }
+      const { data: onChainPaymentResult } = await axios.get(`${wallet.btcpayUrl}/api/v1/stores/${wallet.btcpayStoreId}/payment-methods/OnChain`, {
+        headers: { Authorization: `token ${wallet.btcpayApiKey}` },
+      })
+      return view.render('wallets/edit', {
+        wallet: { ...wallet.toJSON(), xpub: onChainPaymentResult.find((e) => e.enabled) },
+      })
     }
     return view.render('wallets/index', data)
   }
@@ -34,6 +36,7 @@ export default class WalletsController {
         cacheKey: request.url(),
         messages: {
           'xpub.required': 'XPUB is required',
+          'password.required': 'Your password is required to create your wallet',
         },
       })
 
@@ -41,94 +44,46 @@ export default class WalletsController {
         Waiting this PR https://github.com/btcpayserver/btcpayserver/pull/2208
         to update lightning node URI
       */
+      // @ts-ignore
       const { password, xpub, lnuri } = request.only(['password', 'xpub', 'lnuri'])
 
       const wallet = await user?.related('wallet').query().first()
 
       if (!wallet) {
         const btcPayUrl = Env.get('BTCPAY_URL')
-        const email = user?.email
-        // Create user
-        await axios.post(`${btcPayUrl}/api/v1/users`, {
-          email,
-          password,
-          isAdministrator: false,
-        })
-        // Create API Key
-        const { data: apiKeyResult } = await axios.post(
-          `${btcPayUrl}/api/v1/api-keys`,
-          {
-            label: 'LStream',
-            permissions: [
-              'btcpay.store.canmodifystoresettings',
-              'btcpay.server.canuseinternallightningnode',
-            ],
-          },
-          {
-            headers: {
-              Authorization: `Basic ${Buffer.from(`${email}:${password}`, 'utf-8').toString(
-                'base64'
-              )}`,
-            },
-          }
-        )
+        const email = user?.email!
 
-        // Create store
-        const { data: storeResult } = await axios.post(
-          `${btcPayUrl}/api/v1/stores`,
-          {
-            name: 'LStream',
-            website: '',
-            invoiceExpiration: 900,
-            monitoringExpiration: 3600,
-            speedPolicy: 'HighSpeed',
-            lightningDescriptionTemplate: '',
-            paymentTolerance: 0,
-            anyoneCanCreateInvoice: false,
-            requiresRefundEmail: false,
-            lightningAmountInSatoshi: false,
-            lightningPrivateRouteHints: false,
-            onChainWithLnInvoiceFallback: false,
-            redirectAutomatically: false,
-            showRecommendedFee: true,
-            recommendedFeeBlockTarget: 1,
-            defaultLang: 'en',
-            customLogo: '',
-            customCSS: '',
-            htmlTitle: '',
-            networkFeeMode: 'Never',
-            payJoinEnabled: false,
-            defaultPaymentMethod: 'BTC',
-          },
-          {
-            headers: {
-              Authorization: `token ${apiKeyResult.apiKey}`,
-            },
-          }
-        )
+        let apiKeyResult
+        let storeResult
+        try {
+          // Create user
+          await BtcpayService.createOrGetUser(btcPayUrl, email, password)
 
-        // Update BTC wallet with XPUB
-        await axios.put(
-          `${btcPayUrl}/api/v1/stores/${storeResult.id}/payment-methods/OnChain/BTC`,
-          {
-            enabled: 'true',
-            cryptoCode: 'BTC',
-            derivationScheme: xpub,
-            label: 'Test wallet',
-          },
-          {
-            headers: {
-              Authorization: `token ${apiKeyResult.apiKey}`,
-            },
-          }
-        )
+          // Create API Key
+          apiKeyResult = await BtcpayService.createApiKey(btcPayUrl, email, password)
 
-        await user?.related('wallet').create({
-          btcpayCustomInstance: false,
-          btcpayStoreId: storeResult.id,
-          btcpayApiKey: apiKeyResult.apiKey,
-          btcpayUrl: btcPayUrl,
-        })
+          // Create store
+          storeResult = await BtcpayService.createStore(btcPayUrl, apiKeyResult.apiKey)
+
+          // Update BTC wallet with XPUB
+          await BtcpayService.updateOnChainPayment(btcPayUrl, apiKeyResult.apiKey, storeResult.id, xpub)
+
+          await user?.related('wallet').create({
+            btcpayCustomInstance: false,
+            btcpayStoreId: storeResult.id,
+            btcpayApiKey: apiKeyResult.apiKey,
+            btcpayUrl: btcPayUrl,
+          })
+        } catch (e) {
+          if (storeResult) {
+            await BtcpayService.deleteStore(btcPayUrl, apiKeyResult.apiKey, storeResult.id)
+          }
+          if (apiKeyResult) {
+            await BtcpayService.revokeApiKey(btcPayUrl, apiKeyResult.apiKey)
+          }
+          session.flash('error', 'An error occurred while creating your wallet.')
+          return response.redirect('back')
+        }
       }
     }
 
