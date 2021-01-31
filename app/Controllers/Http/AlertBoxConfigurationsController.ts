@@ -26,7 +26,7 @@ export default class AlertBoxConfigurationsController {
     await request.validate({
       schema: postsSchema,
       messages: {
-        'duration.unsigned': 'Duration must be contains beetween 1 and 30',
+        'duration.unsigned': 'Duration must be contains between 1 and 30',
       },
     })
 
