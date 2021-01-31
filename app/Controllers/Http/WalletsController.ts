@@ -65,6 +65,12 @@ export default class WalletsController {
           // Create store
           storeResult = await BtcpayService.createStore(btcPayUrl, apiKeyResult.apiKey)
 
+          // Create Webhook
+          const callbackUrl = `${Env.get('APP_URL')}/donation-done`
+          const webhookResult = await BtcpayService.createWebhook(btcPayUrl, apiKeyResult.apiKey, storeResult.id, callbackUrl)
+
+          // Update LN wallet with lnuri (PR https://github.com/btcpayserver/btcpayserver/pull/2208)
+
           // Update BTC wallet with XPUB
           await BtcpayService.updateOnChainPayment(btcPayUrl, apiKeyResult.apiKey, storeResult.id, xpub)
 
@@ -73,6 +79,8 @@ export default class WalletsController {
             btcpayStoreId: storeResult.id,
             btcpayApiKey: apiKeyResult.apiKey,
             btcpayUrl: btcPayUrl,
+            btcpayWebhookId: webhookResult.id,
+            btcpayWebhookSecret: webhookResult.secret,
           })
         } catch (e) {
           if (storeResult) {

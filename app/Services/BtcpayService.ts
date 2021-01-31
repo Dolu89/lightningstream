@@ -27,7 +27,7 @@ class BtcpayService {
       `${btcPayUrl}/api/v1/api-keys`,
       {
         label: 'LStream',
-        permissions: ['btcpay.store.canmodifystoresettings', 'btcpay.server.canuseinternallightningnode'],
+        permissions: ['btcpay.store.canmodifystoresettings', 'btcpay.store.canuselightningnode', 'btcpay.store.webhooks.canmodifywebhooks', 'btcpay.store.canviewinvoices'],
       },
       {
         headers: {
@@ -91,12 +91,58 @@ class BtcpayService {
     )
   }
 
+  public async createInvoice(btcPayUrl: string, apiKey: string, storeId: string, currency: string, amount: number) {
+    const { data: invoiceResult } = await axios.post(
+      `${btcPayUrl}/api/v1/stores/${storeId}/invoices`,
+      {
+        amount,
+        currency,
+        metadata: {},
+        checkout: {
+          speedPolicy: 'LowSpeed',
+          expirationMinutes: 10,
+          monitoringMinutes: 0,
+          paymentTolerance: 0,
+          notificationUrl: '',
+          defaultLanguage: 'en',
+        },
+      },
+      {
+        headers: { Authorization: `token ${apiKey}` },
+      }
+    )
+    return invoiceResult
+  }
+
   public async revokeApiKey(btcPayUrl: string, apiKey: string) {
     await axios.delete(`${btcPayUrl}/api/v1/api-keys/current`, { headers: { Authorization: `token ${apiKey}` } })
   }
 
   public async deleteStore(btcPayUrl: string, apiKey: string, storeId: string) {
     await axios.delete(`${btcPayUrl}/api/v1/stores/${storeId}`, { headers: { Authorization: `token ${apiKey}` } })
+  }
+
+  public async createWebhook(btcPayUrl: string, apiKey: string, storeId: string, callbackUrl: string) {
+    const { data: webhook } = await axios.post(
+      `${btcPayUrl}/api/v1/stores/${storeId}/webhooks`,
+      {
+        id: '1',
+        enabled: true,
+        automaticRedelivery: true,
+        url: callbackUrl,
+        authorizedEvents: {
+          everything: false,
+          specificEvents: ['InvoiceReceivedPayment'],
+        },
+      },
+      { headers: { Authorization: `token ${apiKey}` } }
+    )
+    return webhook
+  }
+
+  public async getInvoicePaymentMethod(btcPayUrl: string, apiKey: string, storeId: string, invoiceId) {
+    const { data: invoicePaymentMethod } = await axios.get(`${btcPayUrl}/api/v1/stores/${storeId}/invoices/${invoiceId}/payment-methods`, { headers: { Authorization: `token ${apiKey}` } })
+    return invoicePaymentMethod
   }
 }
 

@@ -112,8 +112,6 @@ export default class AlertBoxConfigurationsController {
 
     const activeAlertBoxConfiguration = await user.related('alertBoxConfigurations').query().where('isActive', true).firstOrFail()
 
-    console.log(activeAlertBoxConfiguration.toJSON())
-
     return view.render('alertbox/public', {
       ...activeAlertBoxConfiguration.toJSON(),
       unique_uuid: uniqueUuid,

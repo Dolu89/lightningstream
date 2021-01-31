@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
-import User from './User'
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import User from 'App/Models/User'
 
-export default class Wallet extends BaseModel {
+export default class Invoice extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
@@ -13,22 +13,19 @@ export default class Wallet extends BaseModel {
   public updatedAt: DateTime
 
   @column()
-  public btcpayCustomInstance: boolean
+  public donor: string
 
   @column()
-  public btcpayUrl: string
+  public message: string
 
   @column()
-  public btcpayApiKey: string
+  public btcpayInvoiceId: string
 
   @column()
-  public btcpayStoreId: string
+  public amount: number
 
   @column()
-  public btcpayWebhookId: string
-
-  @column()
-  public btcpayWebhookSecret: string
+  public isPaid: boolean
 
   @column()
   public userId: number

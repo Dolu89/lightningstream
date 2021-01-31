@@ -1,43 +1,32 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
-import axios from 'axios'
-import Env from '@ioc:Adonis/Core/Env'
+import BtcpayService from 'App/Services/BtcpayService'
 
 export default class HomeController {
   public async index({ view, response, params }: HttpContextContract) {
     const username = params.username
 
     const user = await User.query().where('name', username).first()
+    const wallet = await user!.related('wallet').query().firstOrFail()
     if (user) {
-      return view.render('donate')
+      return view.render('donate', { user: { id: user.id, name: user.name }, btcPayUrl: wallet.btcpayUrl })
     }
     return response.redirect('/')
   }
 
   public async createInvoice({ request, response }: HttpContextContract) {
-    const BTCPAY_URL: string = Env.get('BTCPAY_URL')!.toString()
-    const BTCPAY_AUTH: string = Env.get('BTCPAY_AUTH')!.toString()
-    console.log(BTCPAY_URL, BTCPAY_AUTH)
-    const { amount, currency, message, donor } = request.only(['amount', 'currency', 'message', 'donor'])
-    const axiosClient = axios.create({
-      baseURL: BTCPAY_URL,
-      timeout: 5000,
-      responseType: 'json',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': BTCPAY_AUTH,
-      },
+    const { userId, amount, currency, message, donor } = request.only(['amount', 'currency', 'message', 'donor', 'userId'])
+    let user = await User.findOrFail(userId)
+    const wallet = await user.related('wallet').query().firstOrFail()
+    const invoiceResult = await BtcpayService.createInvoice(wallet.btcpayUrl, wallet.btcpayApiKey, wallet.btcpayStoreId, currency, amount)
+    const invoicePaymentMethod = await BtcpayService.getInvoicePaymentMethod(wallet.btcpayUrl, wallet.btcpayApiKey, wallet.btcpayStoreId, invoiceResult.id)
+    await user.related('invoices').create({
+      amount: Math.round(invoicePaymentMethod[0].amount * 100000000),
+      btcpayInvoiceId: invoiceResult.id,
+      donor,
+      message,
+      isPaid: false,
     })
-
-    const invoiceCreation = {
-      price: amount,
-      currency: currency,
-      // 'orderId': 'something',
-      notificationUrl: 'https://localhost:3333/donation-done',
-    }
-
-    const result = await axiosClient.post('/invoices', invoiceCreation)
-
-    response.send(result.data)
+    response.json(invoiceResult)
   }
 }
