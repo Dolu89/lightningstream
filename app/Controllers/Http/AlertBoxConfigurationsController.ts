@@ -11,9 +11,7 @@ export default class AlertBoxConfigurationsController {
   public async index({ auth, view }: HttpContextContract) {
     const user = auth.user
 
-    const alertBoxConfig = await AlertBoxConfiguration.query()
-      .where({ is_active: true, user_id: user?.id })
-      .firstOrFail()
+    const alertBoxConfig = await AlertBoxConfiguration.query().where({ is_active: true, user_id: user?.id }).firstOrFail()
     const alertBoxUrl: string = `${Env.get('APP_URL')}/alert-box/${user?.uniqueUuid}`
     return view.render('alertbox/configuration', { ...alertBoxConfig.toJSON(), alertBoxUrl })
   }
@@ -38,9 +36,7 @@ export default class AlertBoxConfigurationsController {
     const sound = request.file('sound')
 
     const user = auth.user
-    const alertBoxConfig = await AlertBoxConfiguration.query()
-      .where({ is_active: true, user_id: user?.id })
-      .firstOrFail()
+    const alertBoxConfig = await AlertBoxConfiguration.query().where({ is_active: true, user_id: user?.id }).firstOrFail()
 
     if (duration <= 0) {
       duration = 1
@@ -114,11 +110,7 @@ export default class AlertBoxConfigurationsController {
 
     const user = await User.query().where({ uniqueUuid: uniqueUuid }).firstOrFail()
 
-    const activeAlertBoxConfiguration = await user
-      .related('alertBoxConfigurations')
-      .query()
-      .where('isActive', true)
-      .firstOrFail()
+    const activeAlertBoxConfiguration = await user.related('alertBoxConfigurations').query().where('isActive', true).firstOrFail()
 
     console.log(activeAlertBoxConfiguration.toJSON())
 

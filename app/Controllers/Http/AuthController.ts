@@ -10,10 +10,7 @@ export default class AuthController {
      * Validate user details
      */
     const validationSchema = schema.create({
-      email: schema.string({ trim: true }, [
-        rules.email(),
-        rules.unique({ table: 'users', column: 'name' }),
-      ]),
+      email: schema.string({ trim: true }, [rules.email(), rules.unique({ table: 'users', column: 'name' })]),
       name: schema.string({ trim: true }, [rules.unique({ table: 'users', column: 'name' })]),
       password: schema.string({ trim: true }, [rules.confirmed()]),
     })

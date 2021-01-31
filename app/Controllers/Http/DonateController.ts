@@ -18,12 +18,7 @@ export default class HomeController {
     const BTCPAY_URL: string = Env.get('BTCPAY_URL')!.toString()
     const BTCPAY_AUTH: string = Env.get('BTCPAY_AUTH')!.toString()
     console.log(BTCPAY_URL, BTCPAY_AUTH)
-    const { amount, currency, message, donor } = request.only([
-      'amount',
-      'currency',
-      'message',
-      'donor',
-    ])
+    const { amount, currency, message, donor } = request.only(['amount', 'currency', 'message', 'donor'])
     const axiosClient = axios.create({
       baseURL: BTCPAY_URL,
       timeout: 5000,

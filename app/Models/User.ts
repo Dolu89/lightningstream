@@ -1,14 +1,6 @@
 import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
-import {
-  column,
-  beforeSave,
-  BaseModel,
-  hasMany,
-  hasOne,
-  HasOne,
-  HasMany,
-} from '@ioc:Adonis/Lucid/Orm'
+import { column, beforeSave, BaseModel, hasMany, hasOne, HasOne, HasMany } from '@ioc:Adonis/Lucid/Orm'
 import AlertBoxConfiguration from './AlertBoxConfiguration'
 import Wallet from './Wallet'
 

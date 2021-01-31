@@ -12,16 +12,8 @@ export default class AlertBoxes extends BaseSchema {
       table.string('template').defaultTo('[donor] - [amount] sats')
       table.integer('duration').unsigned().defaultTo('5')
       table.boolean('show_message').defaultTo(true)
-      table
-        .string('sound_url')
-        .defaultTo(
-          'https://res.cloudinary.com/lightningstream-io/video/upload/v1593270519/default-alertbox-sound.mp3'
-        )
-      table
-        .string('image_url')
-        .defaultTo(
-          'https://res.cloudinary.com/lightningstream-io/image/upload/v1593270454/default-alertbox-image.gif'
-        )
+      table.string('sound_url').defaultTo('https://res.cloudinary.com/lightningstream-io/video/upload/v1593270519/default-alertbox-sound.mp3')
+      table.string('image_url').defaultTo('https://res.cloudinary.com/lightningstream-io/image/upload/v1593270454/default-alertbox-image.gif')
     })
   }
 
