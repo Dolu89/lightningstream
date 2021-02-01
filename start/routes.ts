@@ -35,7 +35,8 @@ Route.group(() => {
 
   Route.group(() => {
     Route.get('/', 'WalletsController.index')
-    Route.post('/', 'WalletsController.createOrUpdate')
+    Route.post('/', 'WalletsController.create')
+    Route.put('/', 'WalletsController.update')
   }).prefix('wallets')
 }).middleware('auth')
 

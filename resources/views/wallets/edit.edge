@@ -1,6 +1,7 @@
 @layout('layouts/dashboard')
 
 @section('content')
+{{inspect(wallet)}}
 <div id="wallet">
   <article class="message is-warning">
     <div class="message-body">
@@ -9,31 +10,31 @@
     </div>
   </article>
 
-  <form method="post" action="{{ route('WalletsController.createOrUpdate') }}">
+  <form method="post" action="{{ route('WalletsController.update') }}">
 
     <div class="field">
-      <label class="label" for="btcpayurl">BTCPayServer URL</label>
-      <div class="control has-icons-right">
-        <input class="input {{flashMessages.has('errors.btcpayurl') ? 'is-danger' : ''}}"
+      <label class="label" for="btcpay_url">BTCPayServer URL</label>
+      <div class="control  {{flashMessages.get('errors.btcpay_url') ? 'has-icons-right' : ''}}">
+        <input class="input {{flashMessages.has('errors.btcpay_url') ? 'is-danger' : ''}}"
                type="text"
-               name="btcpayurl"
-               id="btcpayurl"
+               name="btcpay_url"
+               id="btcpay_url"
                placeholder="https://btcpay.lightningstream.io"
-               value="{{ flashMessages.get('btcpayurl') || wallet.btcpay_url }}">
-        @if(flashMessages.has('errors.btcpayurl'))
+               value="{{ flashMessages.get('btcpay_url') || wallet.btcpay_url }}">
+        @if(flashMessages.has('errors.btcpay_url'))
         <span class="icon is-small is-right">
             <i class="fas fa-exclamation-triangle"></i>
           </span>
         @endif
       </div>
-      @if(flashMessages.has('errors.btcpayurl'))
-      <p class="help is-danger">{{flashMessages.get('errors.btcpayurl')}}</p>
+      @if(flashMessages.has('errors.btcpay_url'))
+      <p class="help is-danger">{{flashMessages.get('errors.btcpay_url')}}</p>
       @endif
     </div>
 
     <div class="field">
       <label class="label" for="xpub">Derivation public key (XPUB)</label>
-      <div class="control has-icons-right">
+      <div class="control  {{flashMessages.get('errors.xpub') ? 'has-icons-right' : ''}}">
         <input class="input {{flashMessages.has('errors.xpub') ? 'is-danger' : ''}}"
                type="text"
                id="xpub"
@@ -58,18 +59,93 @@
       </div>
     </div>
 
-<!--    <div class="field">-->
-<!--      <label class="label">Confirm password</label>-->
-<!--      <div class="control">-->
-<!--        <input class="input" type="password" name="password">-->
-<!--      </div>-->
-<!--    </div>-->
+    <div class="field">
+      <label class="label" for="btcpay_store_id">Store ID</label>
+      <div class="control {{ flashMessages.get('errors.btcpay_store_id') ? 'has-icons-right' : '' }}">
+        <input class="input {{flashMessages.has('errors.btcpay_store_id') ? 'is-danger' : ''}}"
+               type="text"
+               id="btcpay_store_id"
+               name="btcpay_store_id"
+               value="{{ flashMessages.get('btcpay_store_id') || wallet.btcpay_store_id }}">
+        @if(flashMessages.has('errors.btcpay_store_id'))
+        <span class="icon is-small is-right">
+            <i class="fas fa-exclamation-triangle"></i>
+          </span>
+        @endif
+      </div>
+      @if(flashMessages.has('errors.btcpay_store_id'))
+      <p class="help is-danger">{{flashMessages.get('errors.btcpay_store_id')}}</p>
+      @endif
+    </div>
 
-<!--    <div class="field is-pulled-right">-->
-<!--      <div class="control">-->
-<!--        <button class="button is-primary" type="submit">Save</button>-->
-<!--      </div>-->
-<!--    </div>-->
+    <div class="columns">
+      <div class="column">
+        <div class="field">
+          <label class="label" for="btcpay_webhook_id">Webhook ID</label>
+          <div class="control {{flashMessages.get('errors.btcpay_webhook_id') ? 'has-icons-right' : ''}}">
+            <input class="input {{flashMessages.has('errors.btcpay_webhook_id') ? 'is-danger' : ''}}"
+                   type="text"
+                   id="btcpay_webhook_id"
+                   name="btcpay_webhook_id"
+                   value="{{ flashMessages.get('btcpay_webhook_id') || wallet.btcpay_webhook_id }}">
+            @if(flashMessages.has('errors.btcpay_webhook_id'))
+            <span class="icon is-small is-right">
+            <i class="fas fa-exclamation-triangle"></i>
+          </span>
+            @endif
+          </div>
+          @if(flashMessages.has('errors.btcpay_webhook_id'))
+          <p class="help is-danger">{{flashMessages.get('errors.btcpay_webhook_id')}}</p>
+          @endif
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="field">
+          <label class="label" for="btcpay_webhook_secret">Webhook secret</label>
+          <div class="control {{ flashMessages.get('errors.btcpay_webhook_secret') ? 'has-icons-right' : '' }}">
+            <input class="input {{flashMessages.has('errors.btcpay_webhook_secret') ? 'is-danger' : ''}}"
+                   type="text"
+                   id="btcpay_webhook_secret"
+                   name="btcpay_webhook_secret"
+                   value="{{ flashMessages.get('btcpay_webhook_secret') || wallet.btcpay_webhook_secret }}">
+            @if(flashMessages.has('errors.btcpay_webhook_secret'))
+            <span class="icon is-small is-right">
+            <i class="fas fa-exclamation-triangle"></i>
+          </span>
+            @endif
+          </div>
+          @if(flashMessages.has('errors.btcpay_webhook_secret'))
+          <p class="help is-danger">{{flashMessages.get('errors.btcpay_webhook_secret')}}</p>
+          @endif
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label" for="btcpay_api_key">API Key</label>
+      <div class="control {{ flashMessages.get('errors.btcpay_api_key') ? 'has-icons-right' : '' }}">
+        <input class="input {{flashMessages.has('errors.btcpay_api_key') ? 'is-danger' : ''}}"
+               type="text"
+               id="btcpay_api_key"
+               name="btcpay_api_key"
+               value="{{ flashMessages.get('btcpay_api_key') || wallet.btcpay_api_key }}">
+        @if(flashMessages.has('errors.btcpay_api_key'))
+        <span class="icon is-small is-right">
+            <i class="fas fa-exclamation-triangle"></i>
+          </span>
+        @endif
+      </div>
+      @if(flashMessages.has('errors.btcpay_api_key'))
+      <p class="help is-danger">{{flashMessages.get('errors.btcpay_api_key')}}</p>
+      @endif
+    </div>
+
+    <div class="field is-pulled-right">
+      <div class="control">
+        <button class="button is-primary" type="submit">Update</button>
+      </div>
+    </div>
 
 
   </form>
@@ -79,13 +155,4 @@
 
 @section('scripts')
 @super
-<!--<script>-->
-<!--  var app = new Vue({-->
-<!--    el: "#wallet",-->
-<!--    data: {-->
-<!--      message: "Hello Vue!",-->
-<!--      customInstance: false-->
-<!--    }-->
-<!--  });-->
-<!--</script>-->
 @endsection

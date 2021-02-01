@@ -19,7 +19,11 @@ export default class WalletsController {
     return view.render('wallets/index', data)
   }
 
-  public async createOrUpdate({ request, session, response, auth }: HttpContextContract) {
+  public async update({ request, auth, session, response }: HttpContextContract) {
+    const user = auth.user
+  }
+
+  public async create({ request, session, response, auth }: HttpContextContract) {
     const user = auth.user
     const custominstance = request.input('custominstance')
 
