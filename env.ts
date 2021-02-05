@@ -29,4 +29,5 @@ export default Env.rules({
   PG_PASSWORD: Env.schema.string.optional(),
   PG_DB_NAME: Env.schema.string(),
   BTCPAY_URL: Env.schema.string(),
+  BITCOIN_NETWORK: Env.schema.string(),
 })
