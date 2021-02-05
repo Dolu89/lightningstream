@@ -36,6 +36,9 @@ Route.group(() => {
   Route.group(() => {
     Route.get('/', 'WalletsController.index')
     Route.post('/', 'WalletsController.create')
+    Route.post('/createBtcPayAccount', 'WalletsController.createBtcPayAccount')
+    Route.post('/updateOnChainWallet', 'WalletsController.updateOnChainWallet')
+    Route.post('/updateLnWallet', 'WalletsController.updateLnWallet')
     Route.put('/', 'WalletsController.update')
   }).prefix('wallets')
 }).middleware('auth')

@@ -1,0 +1,73 @@
+<div class="modal" :class="{ 'is-active': modalHW.isActive }">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Hardware wallet configuration</p>
+      <button class="delete" aria-label="close" @click="modalHW.isActive = false"></button>
+    </header>
+    <section class="modal-card-body" v-if="modalHW.step === 'authorize-vault'">
+      <div v-if="!modalHW.vaultNotDetected">Waiting for vault...</div>
+      <div v-if="modalHW.vaultNotDetected">Verify your HWI software is open</div>
+    </section>
+
+    <section class="modal-card-body" v-if="modalHW.step === 'fetch-device'">
+      <div v-if="!modalHW.deviceNotFound">Enumerate...</div>
+      <div v-if="modalHW.deviceNotFound">Verify your hardware wallet is connected and unlocked</div>
+    </section>
+
+    <section class="modal-card-body" v-if="modalHW.step === 'select-account'">
+      <div class="field">
+        <label class="label">Address type</label>
+        <div class="control">
+          <div class="select">
+            <select v-model="modalHW.addressType">
+              <option value="segwit">Segwit (Recommended, cheapest transaction fee)</option>
+              <option value="segwitWrapped">Segwit wrapper (less cheap but compatible with old wallets)</option>
+              <option value="legacy">Legacy (not recommended)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Account</label>
+        <div class="select">
+          <select v-model="modalHW.account">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="modal-card-body" v-if="modalHW.step === 'get-xpub'">
+      Fetching public keys
+    </section>
+
+    <footer class="modal-card-foot" v-if="modalHW.step === 'authorize-vault'">
+      <button class="button is-success" v-if="modalHW.vaultNotDetected" @click="authorizeVault">Retry</button>
+    </footer>
+
+    <footer class="modal-card-foot" v-if="modalHW.step === 'select-account'">
+      <button class="button is-success" @click="getXPub">Next</button>
+    </footer>
+  </div>
+</div>

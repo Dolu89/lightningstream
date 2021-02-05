@@ -33,6 +33,9 @@ export default class Wallet extends BaseModel {
   @column()
   public userId: number
 
+  @column()
+  public step: string
+
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 }

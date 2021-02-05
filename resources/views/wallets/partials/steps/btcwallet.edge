@@ -1,0 +1,77 @@
+<div id="app">
+  <form method="post" action="{{ route('WalletsController.updateOnChainWallet') }}">
+
+    <div class="field">
+      <label class="label">Derivation public key (XPUB)
+        <button @click="authorizeVault" type="button" class="button is-text is-small">import from hardware wallet
+        </button>
+      </label>
+      <div class="control {{flashMessages.has('errors.xpub') ? 'has-icons-right' : ''}}">
+        <input class="input {{flashMessages.has('errors.xpub') ? 'is-danger' : ''}}"
+               type="text"
+               name="xpub"
+               placeholder="xpub..."
+               v-model="xpub"
+               value="{{ flashMessages.get('xpub') || '' }}">
+        @if(flashMessages.has('errors.xpub'))
+        <span class="icon is-small is-right">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </span>
+        @endif
+      </div>
+      @if(flashMessages.has('errors.xpub'))
+      <p class="help is-danger">{{flashMessages.get('errors.xpub')}}</p>
+      @endif
+    </div>
+
+
+    <div class="card mb-6">
+      <header class="card-header">
+        <p class="card-header-title">
+          Expert mode (if you don't know what is it, leave blank)
+        </p>
+        <button class="card-header-icon" aria-label="more options">
+            <span class="icon">
+              <i class="fas fa-angle-down" aria-hidden="true"></i>
+            </span>
+        </button>
+      </header>
+      <div class="card-content">
+        <div class="content">
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <label class="label">Root fingerprint</label>
+                <div class="control">
+                  <input class="input" type="text" name="fingerprint" placeholder="" v-model="fingerPrint">
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label class="label">Key path</label>
+                <div class="control">
+                  <input class="input" type="text" name="keyPath" placeholder="" v-model="keyPath">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <input type="hidden" name="skip" v-model="skip">
+    <input type="hidden" name="verify" value="true">
+
+    <div class="field is-grouped is-pulled-right">
+      <div class="control">
+        <button class="button is-text" type="submit" @click="skip = true">Skip</button>
+      </div>
+      <div class="control">
+        <button class="button is-primary" type="submit">Next</button>
+      </div>
+    </div>
+  </form>
+
+  @include('wallets/partials/steps/btcwallet-modal')
+</div>

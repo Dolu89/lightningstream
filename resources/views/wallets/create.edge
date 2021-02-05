@@ -1,0 +1,32 @@
+@layout('layouts/dashboard')
+
+@section('content')
+<div id="wallet">
+  @!component('wallets/partials/stepper', { step })
+
+  @if(step === 'btcpay')
+    @include('wallets/partials/steps/btcpay')
+  @elseif (step === 'btcwallet')
+    @include('wallets/partials/steps/btcwallet')
+  @elseif (step === 'btcwallet-verify')
+    @include('wallets/partials/steps/btcwallet-verify')
+  @elseif (step === 'lnwallet')
+    @include('wallets/partials/steps/lnwallet')
+  @elseif (step === 'finished')
+    @include('wallets/partials/steps/finished')
+  @else
+  finish
+  @endif
+
+</div>
+@endsection
+
+@section('scripts')
+@super
+@if(step === 'btcpay')
+<script src="/assets/js/wallets/step-btcpay.js"></script>
+@elseif(step === 'btcwallet')
+<script>window.bitcoinNetwork = '{{bitcoinNetwork}}'</script>
+<script src="/assets/js/wallets/step-btcwallet.js"></script>
+@endif
+@endsection

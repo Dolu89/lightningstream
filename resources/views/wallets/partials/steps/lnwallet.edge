@@ -1,0 +1,13 @@
+<article class="message is-info">
+  <div class="message-body">
+    <p>Lightning network wallet is not configurable from Lightningstream yet.</p>
+    <a href="{{btcPayUrl}}/stores/{{btcPayStoreId}}/lightning/BTC" target="_blank">Edit on BTCPay</a>
+  </div>
+</article>
+<form method="post" action="{{ route('WalletsController.updateLnWallet') }}">
+  <div class="field is-pulled-right">
+    <div class="control">
+      <button class="button is-primary" type="submit">Next</button>
+    </div>
+  </div>
+</form>

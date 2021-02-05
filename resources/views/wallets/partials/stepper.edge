@@ -1,0 +1,46 @@
+<ul class="steps is-medium is-centered has-content-centered">
+  <li class="steps-segment {{step === 'btcpay' ? 'is-active' : ''}}">
+    <a href="#" class="has-text-dark">
+          <span class="steps-marker">
+            <span class="icon">
+              <i class="fas fa-server"></i>
+            </span>
+          </span>
+      <div class="steps-content">
+        <p class="heading">BTCPay server</p>
+      </div>
+    </a>
+  </li>
+  <li class="steps-segment {{step === 'btcwallet' || step === 'btcwallet-verify' ? 'is-active' : ''}}">
+    <a href="#" class="has-text-dark">
+          <span class="steps-marker">
+            <span class="icon">
+              <i class="fab fa-bitcoin"></i>
+            </span>
+          </span>
+      <div class="steps-content">
+        <p class="heading">Bitcoin wallet</p>
+      </div>
+    </a>
+  </li>
+  <li class="steps-segment {{step === 'lnwallet' ? 'is-active' : ''}}">
+        <span class="steps-marker">
+          <span class="icon">
+            <i class="fas fa-bolt"></i>
+          </span>
+        </span>
+    <div class="steps-content">
+      <p class="heading">Lightning wallet</p>
+    </div>
+  </li>
+  <li class="steps-segment {{step === 'finished' ? 'is-active' : ''}}">
+        <span class="steps-marker is-hollow">
+          <span class="icon">
+            <i class="fa fa-check"></i>
+          </span>
+        </span>
+    <div class="steps-content">
+      <p class="heading">Finished</p>
+    </div>
+  </li>
+</ul>

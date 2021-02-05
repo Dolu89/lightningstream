@@ -74,7 +74,23 @@ class BtcpayService {
     return storeResult
   }
 
-  public async updateOnChainPayment(btcPayUrl: string, apiKey: string, storeId: string, xpub: string) {
+  public async previewOnChainAddresses(btcPayUrl: string, apiKey: string, storeId: string, xpub: string, keyPath: string, fingerprint: string) {
+    const { data: resultAddresses } = await axios.post(
+      `${btcPayUrl}/api/v1/stores/${storeId}/payment-methods/OnChain/BTC/preview?offset=0&amount=10`,
+      {
+        derivationScheme: xpub,
+        accountKeyPath: `${fingerprint}/${keyPath}`,
+      },
+      {
+        headers: {
+          Authorization: `token ${apiKey}`,
+        },
+      }
+    )
+    return resultAddresses
+  }
+
+  public async updateOnChainPayment(btcPayUrl: string, apiKey: string, storeId: string, xpub: string, keyPath: string, fingerprint: string) {
     await axios.put(
       `${btcPayUrl}/api/v1/stores/${storeId}/payment-methods/OnChain/BTC`,
       {
@@ -82,6 +98,7 @@ class BtcpayService {
         cryptoCode: 'BTC',
         derivationScheme: xpub,
         label: 'LStream on chain wallet',
+        accountKeyPath: `${fingerprint}/${keyPath}`,
       },
       {
         headers: {

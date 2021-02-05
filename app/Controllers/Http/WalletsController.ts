@@ -7,8 +7,8 @@ import BtcpayService from 'App/Services/BtcpayService'
 export default class WalletsController {
   public async index({ view, auth }: HttpContextContract) {
     const wallet = await auth.user?.related('wallet').query().first()
-    let data = {}
-    if (wallet) {
+
+    if (wallet && wallet.step === 'finished') {
       const { data: onChainPaymentResult } = await axios.get(`${wallet.btcpayUrl}/api/v1/stores/${wallet.btcpayStoreId}/payment-methods/OnChain`, {
         headers: { Authorization: `token ${wallet.btcpayApiKey}` },
       })
@@ -16,22 +16,31 @@ export default class WalletsController {
         wallet: { ...wallet.toJSON(), xpub: onChainPaymentResult.find((e) => e.enabled) },
       })
     }
-    return view.render('wallets/index', data)
+
+    const step = wallet?.step ? wallet.step : 'btcpay'
+
+    //Temp : Remove when LN wallet is editable with Greenfield
+    if (step === 'lnwallet') {
+      return view.render('wallets/create', {
+        step,
+        btcPayUrl: wallet?.btcpayUrl,
+        btcPayStoreId: wallet?.btcpayStoreId,
+      })
+    }
+
+    return view.render('wallets/create', {
+      step,
+      bitcoinNetwork: Env.get('BITCOIN_NETWORK'),
+    })
   }
 
-  public async update({ request, auth, session, response }: HttpContextContract) {
+  public async createBtcPayAccount({ request, auth, session, response }: HttpContextContract) {
     const user = auth.user
-  }
-
-  public async create({ request, session, response, auth }: HttpContextContract) {
-    const user = auth.user
-    const custominstance = request.input('custominstance')
+    const customInstance = request.input('customInstance')
 
     // Use the BTCPay instance we provide
-    if (custominstance === 'false') {
+    if (customInstance === 'false') {
       const walletSchema = schema.create({
-        xpub: schema.string(),
-        lnuri: schema.string.optional(),
         password: schema.string({}, [rules.password({ userPassword: user?.password! })]),
       })
 
@@ -39,7 +48,6 @@ export default class WalletsController {
         schema: walletSchema,
         cacheKey: request.url(),
         messages: {
-          'xpub.required': 'XPUB is required',
           'password.required': 'Your password is required to create your wallet',
         },
       })
@@ -49,7 +57,7 @@ export default class WalletsController {
         to update lightning node URI
       */
       // @ts-ignore
-      const { password, xpub, lnuri } = request.only(['password', 'xpub', 'lnuri'])
+      const { password } = request.only(['password'])
 
       const wallet = await user?.related('wallet').query().first()
 
@@ -73,11 +81,6 @@ export default class WalletsController {
           const callbackUrl = `${Env.get('APP_URL')}/donation-done`
           const webhookResult = await BtcpayService.createWebhook(btcPayUrl, apiKeyResult.apiKey, storeResult.id, callbackUrl)
 
-          // Update LN wallet with lnuri (PR https://github.com/btcpayserver/btcpayserver/pull/2208)
-
-          // Update BTC wallet with XPUB
-          await BtcpayService.updateOnChainPayment(btcPayUrl, apiKeyResult.apiKey, storeResult.id, xpub)
-
           await user?.related('wallet').create({
             btcpayCustomInstance: false,
             btcpayStoreId: storeResult.id,
@@ -85,6 +88,7 @@ export default class WalletsController {
             btcpayUrl: btcPayUrl,
             btcpayWebhookId: webhookResult.id,
             btcpayWebhookSecret: webhookResult.secret,
+            step: 'btcwallet',
           })
         } catch (e) {
           if (storeResult) {
@@ -96,10 +100,60 @@ export default class WalletsController {
           session.flash('error', 'An error occurred while creating your wallet.')
           return response.redirect('back')
         }
+        return response.redirect('back')
       }
     }
+  }
 
-    session.flash('success', 'Wallet created')
-    response.redirect('back')
+  public async updateOnChainWallet({ request, auth, response, view }: HttpContextContract) {
+    const user = auth.user!
+    await user.preload('wallet')
+    const { skip, verify, confirm } = request.only(['skip', 'verify', 'confirm'])
+
+    if (skip === 'true') {
+      user.wallet.step = 'lnwallet'
+      await user.wallet.save()
+      return response.redirect('back')
+    } else if (verify === 'true') {
+      const { xpub, keyPath, fingerprint } = request.only(['xpub', 'keyPath', 'fingerprint'])
+      const addresses = await BtcpayService.previewOnChainAddresses(user.wallet.btcpayUrl, user.wallet.btcpayApiKey, user.wallet.btcpayStoreId, xpub, keyPath, fingerprint)
+      return view.render('wallets/create', {
+        step: 'btcwallet-verify',
+        addresses: addresses.addresses,
+        xpub,
+        keyPath,
+        fingerprint,
+      })
+    } else if (confirm === 'true') {
+      const { xpub, keyPath, fingerprint } = request.only(['xpub', 'keyPath', 'fingerprint'])
+      const walletSchema = schema.create({
+        xpub: schema.string(),
+      })
+
+      await request.validate({
+        schema: walletSchema,
+        cacheKey: request.url(),
+        messages: {
+          'xpub.required': 'XPUB is required',
+        },
+      })
+
+      await BtcpayService.updateOnChainPayment(user.wallet.btcpayUrl, user.wallet.btcpayApiKey, user.wallet.btcpayStoreId, xpub, keyPath, fingerprint)
+      user.wallet.step = 'lnwallet'
+      await user.wallet.save()
+      return response.redirect('/wallets')
+    }
+  }
+
+  public async updateLnWallet({ response, auth }: HttpContextContract) {
+    const user = auth.user!
+    await user?.preload('wallet')
+    /*
+      Waiting this PR https://github.com/btcpayserver/btcpayserver/pull/2208
+      to update lightning node
+    */
+    user.wallet.step = 'finished'
+    await user.wallet.save()
+    response.redirect().back()
   }
 }

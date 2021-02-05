@@ -1,9 +1,9 @@
 @layout('layouts/dashboard')
 
 @section('content')
-{{inspect(wallet)}}
+@!component('wallets/partials/stepper', {step: 'finished'})
 <div id="wallet">
-  <article class="message is-warning">
+  <article class="message is-info">
     <div class="message-body">
       <p>Wallet update is not implemented yet. Please, go to your BTCPayServer instance and update it manually</p>
       <a href="{{wallet.btcpay_url}}" target="_blank">Go to BTCPayServer</a>
@@ -141,11 +141,11 @@
       @endif
     </div>
 
-    <div class="field is-pulled-right">
-      <div class="control">
-        <button class="button is-primary" type="submit">Update</button>
-      </div>
-    </div>
+<!--    <div class="field is-pulled-right">-->
+<!--      <div class="control">-->
+<!--        <button class="button is-primary" type="submit">Update</button>-->
+<!--      </div>-->
+<!--    </div>-->
 
 
   </form>

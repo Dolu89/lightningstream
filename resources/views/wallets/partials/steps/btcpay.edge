@@ -1,0 +1,50 @@
+<div id="app">
+  <form method="post" action="{{ route('WalletsController.createBtcPayAccount') }}">
+
+    <div class="has-text-centered">
+      <div class="field">
+        <div class="control">
+          <label class="radio">
+            <input type="radio" name="customInstance" :value="false" v-model="customInstance">
+            Use the default BTCPay instance
+          </label>
+          <label class="radio" disabled>
+            <input type="radio" name="customInstance" :value="true" v-model="customInstance" disabled>
+            I have my own BTCPay server (SOON)
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!--  Custom instance : true  -->
+    <div v-if="customInstance">TODO</div>
+
+    <!--  Custom instance : false  -->
+    <div v-if="!customInstance">
+
+      <div class="field">
+        <label class="label">Confirm your password</label>
+        <div class="control has-icons-right">
+          <input class="input {{flashMessages.has('errors.password') ? 'is-danger' : ''}}" type="password"
+                 name="password">
+          @if(flashMessages.has('errors.password'))
+          <span class="icon is-small is-right">
+            <i class="fas fa-exclamation-triangle"></i>
+          </span>
+          @endif
+        </div>
+        @if(flashMessages.has('errors.password'))
+        <p class="help is-danger">{{flashMessages.get('errors.password')}}</p>
+        @endif
+      </div>
+
+      <div class="field is-pulled-right">
+        <div class="control">
+          <button class="button is-primary" type="submit">Next</button>
+        </div>
+      </div>
+
+    </div>
+
+  </form>
+</div>

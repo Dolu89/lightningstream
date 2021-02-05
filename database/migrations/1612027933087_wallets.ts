@@ -14,6 +14,7 @@ export default class Wallets extends BaseSchema {
       table.string('btcpay_store_id')
       table.string('btcpay_webhook_id')
       table.string('btcpay_webhook_secret')
+      table.string('step')
     })
   }
 
