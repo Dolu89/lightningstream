@@ -1,2 +1,2 @@
-release: node build/ace migration:run --force && yarn install --production
-web: ENV_SILENT=true node build/server.js
+release: node build/ace migration:run --force
+web: node build/server.js
