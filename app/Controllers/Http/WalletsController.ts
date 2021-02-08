@@ -46,7 +46,6 @@ export default class WalletsController {
 
       await request.validate({
         schema: walletSchema,
-        cacheKey: request.url(),
         messages: {
           'password.required': 'Your password is required to create your wallet',
         },
