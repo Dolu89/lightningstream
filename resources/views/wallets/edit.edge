@@ -33,13 +33,13 @@
     </div>
 
     <div class="field">
-      <label class="label" for="xpub">Derivation public key (XPUB)</label>
+      <label class="label" for="xpub">Testnet derivation public key (tPub)</label>
       <div class="control  {{flashMessages.get('errors.xpub') ? 'has-icons-right' : ''}}">
         <input class="input {{flashMessages.has('errors.xpub') ? 'is-danger' : ''}}"
                type="text"
                id="xpub"
                name="xpub"
-               placeholder="xpub..."
+               placeholder="tpub..."
                value="{{ flashMessages.get('xpub') || wallet.xpub.derivationScheme }}">
         @if(flashMessages.has('errors.xpub'))
         <span class="icon is-small is-right">
