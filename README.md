@@ -1,10 +1,20 @@
 # Lightningstream - Non custodial Bitcoin donation platform (on chain & LN) for streamers 
 
-⚠️ Lightningstream is still in development
+⚠️ **Lightningstream is still in development**
+
+Lightningstream is a non-custodial Bitcoin donation platform focusing on donations for streamers, podcast hosts and other live or recorded content creators.
+
+* Self-host your donation portal
+* Direct, peer-to-peer Bitcoin donations
+* Bitcoin on-chain and Lightning enabled
+* Create and customize your donation alerts
+* Link your [BTCPayServer](www.btcpayserver.org) instance to Lightningstream
+* API support for automatic wallet configuration
+
 
 ---
 
-## How to install
+## Installation
 
 0. Prerequisite
 - Node.js >= 12.0.0
