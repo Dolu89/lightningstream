@@ -1,5 +1,7 @@
 @layout('layouts/dashboard')
 
+@set('xpubString', bitcoinNetwork() !== 'mainnet' ? 'tPUB' : 'xPUB')
+
 @section('content')
 @!component('wallets/partials/stepper', {step: 'finished'})
 <div id="wallet">
@@ -33,13 +35,13 @@
     </div>
 
     <div class="field">
-      <label class="label" for="xpub">Derivation public key (XPUB)</label>
+      <label class="label" for="xpub">Derivation public key ({{xpubString}})</label>
       <div class="control  {{flashMessages.get('errors.xpub') ? 'has-icons-right' : ''}}">
         <input class="input {{flashMessages.has('errors.xpub') ? 'is-danger' : ''}}"
                type="text"
                id="xpub"
                name="xpub"
-               placeholder="xpub..."
+               placeholder="{{xpubString.toLowerCase()}}..."
                value="{{ flashMessages.get('xpub') || wallet.xpub.derivationScheme }}">
         @if(flashMessages.has('errors.xpub'))
         <span class="icon is-small is-right">

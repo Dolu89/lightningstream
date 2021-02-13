@@ -1,8 +1,10 @@
+@set('xpubString', bitcoinNetwork() !== 'mainnet' ? 'tPUB' : 'xPUB')
+
 <div id="app">
   <form method="post" action="{{ route('WalletsController.updateOnChainWallet') }}">
 
     <div class="field">
-      <label class="label">Derivation public key (XPUB)
+      <label class="label">Derivation public key ({{xpubString}})
         <button @click="authorizeVault" type="button" class="button is-text is-small">import from hardware wallet
         </button>
       </label>
@@ -10,7 +12,7 @@
         <input class="input {{flashMessages.has('errors.xpub') ? 'is-danger' : ''}}"
                type="text"
                name="xpub"
-               placeholder="xpub..."
+               placeholder="{{xpubString.toLowerCase()}}..."
                v-model="xpub"
                value="{{ flashMessages.get('xpub') || '' }}">
         @if(flashMessages.has('errors.xpub'))

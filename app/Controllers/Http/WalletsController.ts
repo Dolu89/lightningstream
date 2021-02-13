@@ -30,7 +30,6 @@ export default class WalletsController {
 
     return view.render('wallets/create', {
       step,
-      bitcoinNetwork: Env.get('BITCOIN_NETWORK'),
     })
   }
 

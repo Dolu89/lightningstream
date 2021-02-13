@@ -1,4 +1,5 @@
 import { ApplicationContract } from '@ioc:Adonis/Core/Application'
+import Env from '@ioc:Adonis/Core/Env'
 
 export default class AppProvider {
   public static needsApplication = true
@@ -10,7 +11,10 @@ export default class AppProvider {
   }
 
   public async boot() {
-    // IoC container is ready
+    const View = (await import('@ioc:Adonis/Core/View')).default
+    View.global('bitcoinNetwork', () => {
+      return Env.get('BITCOIN_NETWORK').toLowerCase()
+    })
   }
 
   public async ready() {

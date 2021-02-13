@@ -26,7 +26,7 @@
 @if(step === 'btcpay')
 <script src="/assets/js/wallets/step-btcpay.js"></script>
 @elseif(step === 'btcwallet')
-<script>window.bitcoinNetwork = '{{bitcoinNetwork}}'</script>
+<script>window.bitcoinNetwork = '{{bitcoinNetwork()}}'</script>
 <script src="/assets/js/wallets/step-btcwallet.js"></script>
 @endif
 @endsection
