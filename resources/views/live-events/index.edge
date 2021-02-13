@@ -1,0 +1,53 @@
+@layout('layouts/dashboard')
+
+@section('content')
+<h1 class="is-size-4">Live events</h1>
+
+<div id="app">
+  <span v-if="invoices.length === 0">No events yet</span>
+  <table v-if="invoices.length > 0" class="table is-fullwidth">
+    <tbody>
+    <tr v-for="invoice in invoices" :key="invoice.id">
+      <td>@{{getRelativeDate(invoice.created_at)}}</td>
+      <td><strong>@{{invoice.donor}}</strong> donated <strong>@{{invoice.amount}}</strong> sats</td>
+      <td>@{{invoice.message}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+@endsection
+
+@section('scripts')
+@super
+<script>
+  const socket = io("/");
+  const srvModel = JSON.parse(`{{{JSON.stringify(invoices)}}}`);
+
+  var app = new Vue({
+    el: "#app",
+    data: {
+      invoices: srvModel
+    },
+    created() {
+      const uniqueUuid = "{{unique_uuid}}";
+      socket.on("room-joined", (data) => {
+        console.log("room-joined", data);
+      });
+      socket.on("donation-done", (data) => {
+        this.invoices = [data, ...this.invoices]
+      });
+      socket.emit("room-join", { unique_uuid: uniqueUuid });
+
+      // Render the view every minute to update relative time
+      setInterval(() => {
+        this.$forceUpdate();
+      }, 1000*60)
+    },
+    methods: {
+      getRelativeDate(date) {
+        return dayjs().from(dayjs(date), true);
+      }
+    }
+  });
+</script>
+@endsection

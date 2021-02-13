@@ -22,7 +22,12 @@ export default class CallbacksController {
       invoice.isPaid = true
       await invoice.save()
       const uniqueUuid = user.uniqueUuid
-      Ws.io.to(uniqueUuid).emit('donation-done', { amount: invoice.amount, donor: invoice.donor, message: invoice.message })
+      Ws.io.to(uniqueUuid).emit('donation-done', {
+        created_at: invoice.createdAt,
+        amount: invoice.amount,
+        donor: invoice.donor,
+        message: invoice.message,
+      })
     } else {
       console.error('ERROR')
     }

@@ -33,6 +33,8 @@ Route.group(() => {
     Route.post('/', 'AlertBoxConfigurationsController.update')
   }).prefix('alert-box')
 
+  Route.get('live-events', 'LiveEventsController.index')
+
   Route.group(() => {
     Route.get('/', 'WalletsController.index')
     Route.post('/', 'WalletsController.create')

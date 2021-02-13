@@ -37,7 +37,7 @@
     "phc-bcrypt": "^1.0.4",
     "proxy-addr": "^2.0.6",
     "reflect-metadata": "^0.1.13",
-    "socket.io": "^2.3.0",
+    "socket.io": "^3.1.1",
     "source-map-support": "^0.5.19",
     "uuid": "^8.2.0"
   }
